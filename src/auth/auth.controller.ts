@@ -38,8 +38,6 @@ export class AuthController {
     @UseGuards(AuthGuard('jwt'))
     @Get('whoami')
     async whoami(@Request() req): Promise<ResponseDto> {
-        console.log('AAA')
-
         return {
             data: req.user,
             message: 'OK'

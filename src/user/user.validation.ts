@@ -1,7 +1,8 @@
 import * as Joi from 'joi'
+import BaseValidation from 'src/common/base.validation'
 import { Gender } from 'src/common/enum/user.enum'
 
-export default class UserValidation {
+export default class UserValidation extends BaseValidation {
     public static find = Joi.object({
         username: Joi.string().min(5).max(20).optional(),
         email: Joi.string().email().optional(),
@@ -9,10 +10,6 @@ export default class UserValidation {
             .valid(...Object.values(Gender))
             .optional(),
         phone: Joi.string().min(5).max(20).optional()
-    })
-
-    public static id = Joi.object({
-        id: Joi.number().min(0).required()
     })
 
     public static update = Joi.object({

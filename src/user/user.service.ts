@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { UserEntity } from './user.entity'
-import { CreateUserDto, updateUserDto } from './user.dto'
+import { CreateUserDto, FindUserDto, UpdateUserDto } from './user.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()
@@ -15,15 +15,15 @@ export class UserService {
         return this.userRepository.find()
     }
 
-    async find(user: Partial<UserEntity>): Promise<UserEntity[]> {
+    async find(findUserDto: FindUserDto): Promise<UserEntity[]> {
         return this.userRepository.find({
-            where: user
+            where: findUserDto
         })
     }
 
-    async findOne(user: Partial<UserEntity>): Promise<UserEntity> {
+    async findOne(findUserDto: FindUserDto): Promise<UserEntity> {
         return this.userRepository.findOne({
-            where: user
+            where: findUserDto
         })
     }
 
@@ -51,20 +51,26 @@ export class UserService {
         return this.userRepository.findOneBy({ phone })
     }
 
-    create(user: CreateUserDto): UserEntity {
-        return this.userRepository.create(user)
+    create(createUserDto: CreateUserDto): UserEntity {
+        return this.userRepository.create(createUserDto)
     }
 
     async save(user: UserEntity): Promise<UserEntity> {
         return this.userRepository.save(user)
     }
 
-    async update(id: number, updateUser: updateUserDto): Promise<UserEntity> {
+    async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
         const user = await this.findById(id)
-
         if (!user) throw new NotFoundException('User not found.')
 
-        Object.assign(user, updateUser)
+        Object.assign(user, updateUserDto)
         return this.save(user)
+    }
+
+    async delete(id: number): Promise<void> {
+        const user = await this.findById(id)
+        if (!user) throw new NotFoundException('User not found.')
+
+        await this.userRepository.delete(id)
     }
 }
