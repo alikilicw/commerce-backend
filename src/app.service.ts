@@ -4,6 +4,7 @@ import { listEntities } from './common/db/database'
 @Injectable()
 export class AppService {
     getEntities(): string[] {
-        return listEntities()
+        const entities = listEntities().map((entitiy) => entitiy.replace('Entity', ''))
+        return entities
     }
 }
