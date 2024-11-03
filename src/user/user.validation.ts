@@ -1,6 +1,6 @@
 import * as Joi from 'joi'
 import BaseValidation from 'src/common/base.validation'
-import { Gender } from 'src/common/enum/user.enum'
+import { Gender } from './user.entity'
 
 export default class UserValidation extends BaseValidation {
     public static find = Joi.object({

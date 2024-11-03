@@ -1,23 +1,12 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    NotFoundException,
-    Param,
-    Patch,
-    Post,
-    Put,
-    Query,
-    UsePipes,
-    ValidationPipe
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, UseGuards, UsePipes } from '@nestjs/common'
 import { CategoryEntity } from './category.entity'
 import { CategoryService } from './category.service'
 import { JoiValidationPipe } from 'src/common/pipe/validation.pipe'
 import CategoryValidation from './category.validation'
 import { CreateCategoryDto, FindCategoryDto, UpdateCategoryDto } from './category.dto'
+import { AuthGuard } from '@nestjs/passport'
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('categories')
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}

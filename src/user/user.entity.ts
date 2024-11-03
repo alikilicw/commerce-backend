@@ -1,5 +1,10 @@
-import { Gender } from 'src/common/enum/user.enum'
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from 'typeorm'
+
+export enum Gender {
+    MALE = 'male',
+    FEMALE = 'female',
+    UNKNOWN = 'unknown'
+}
 
 @Entity('users')
 export class UserEntity {
@@ -26,4 +31,10 @@ export class UserEntity {
 
     @Column({ select: false, nullable: true })
     confirmCode: string
+
+    @CreateDateColumn()
+    createdAt: Timestamp
+
+    @UpdateDateColumn()
+    updatedAt: Timestamp
 }

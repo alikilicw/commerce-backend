@@ -1,5 +1,4 @@
-import { Gender } from 'src/common/enum/user.enum'
-import { UserEntity } from './user.entity'
+import { Gender, UserEntity } from './user.entity'
 
 export type CreateUserDto = Pick<UserEntity, 'username' | 'email' | 'gender' | 'phone' | 'password'>
 export type FindUserDto = {

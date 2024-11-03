@@ -15,20 +15,10 @@ export class AuthService {
         private otpService: OtpService
     ) {}
 
-    async register(body: RegisterReqDto): Promise<boolean> {
-        const [userCheckWithUsername, userCheckWithEmail, userCheckWithPhone] = await Promise.all([
-            this.userService.findByUsername(body.username),
-            this.userService.findByEmail(body.email),
-            this.userService.findByPhone(body.phone)
-        ])
+    async register(registerReqDto: RegisterReqDto): Promise<boolean> {
+        registerReqDto.password = await hash(registerReqDto.password, 10)
 
-        if (userCheckWithUsername) throw new BadRequestException('Username is already in use.')
-        if (userCheckWithEmail) throw new BadRequestException('Email is already in use.')
-        if (userCheckWithPhone) throw new BadRequestException('Phone is already in use.')
-
-        body.password = await hash(body.password, 10)
-
-        let user = this.userService.create(body)
+        let user = await this.userService.create(registerReqDto)
 
         const confirmationCode = generateRandomVerificationCode()
 
@@ -39,12 +29,12 @@ export class AuthService {
         return true
     }
 
-    async login(body: LoginReqDto): Promise<LoginServiceResDto> {
-        const user = await this.userService.findByUsername(body.username, 'password')
+    async login(loginReqDto: LoginReqDto): Promise<LoginServiceResDto> {
+        const user = await this.userService.findByUsername(loginReqDto.username, 'password')
         if (!user) throw new NotFoundException('User not found.')
         if (!user.isActive) throw new BadRequestException('Verify email first.')
 
-        const passOk = await compare(body.password, user.password)
+        const passOk = await compare(loginReqDto.password, user.password)
         if (!passOk) throw new BadRequestException('Password is incorrect.')
 
         const token = await this.createToken(user)

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { UserEntity } from './user.entity'
 import { CreateUserDto, FindUserDto, UpdateUserDto } from './user.dto'
@@ -51,7 +51,17 @@ export class UserService {
         return this.userRepository.findOneBy({ phone })
     }
 
-    create(createUserDto: CreateUserDto): UserEntity {
+    async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+        const [userCheckWithUsername, userCheckWithEmail, userCheckWithPhone] = await Promise.all([
+            this.findByUsername(createUserDto.username),
+            this.findByEmail(createUserDto.email),
+            this.findByPhone(createUserDto.phone)
+        ])
+
+        if (userCheckWithUsername) throw new BadRequestException('Username is already in use.')
+        if (userCheckWithEmail) throw new BadRequestException('Email is already in use.')
+        if (userCheckWithPhone) throw new BadRequestException('Phone is already in use.')
+
         return this.userRepository.create(createUserDto)
     }
 

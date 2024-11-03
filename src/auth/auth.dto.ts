@@ -1,6 +1,5 @@
 import { ResponseDto } from 'src/common/dto/response.dto'
-import { Gender } from 'src/common/enum/user.enum'
-import { UserEntity } from 'src/user/user.entity'
+import { Gender, UserEntity } from 'src/user/user.entity'
 
 export type LoginReqDto = {
     username: string

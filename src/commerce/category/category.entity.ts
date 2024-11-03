@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from 'typeorm'
+import { ProductEntity } from '../product/product.entity'
 
 @Entity('categories')
 export class CategoryEntity {
@@ -14,9 +15,12 @@ export class CategoryEntity {
     @Column({ nullable: true })
     parentId: number
 
-    @Column({ default: true })
-    filtrable: boolean
+    @CreateDateColumn()
+    createdAt: Timestamp
 
-    @Column({ default: true })
-    searchable: boolean
+    @UpdateDateColumn()
+    updatedAt: Timestamp
+
+    @OneToMany(() => ProductEntity, (product) => product.category)
+    products: ProductEntity[]
 }

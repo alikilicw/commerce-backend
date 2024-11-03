@@ -1,5 +1,5 @@
 import * as Joi from 'joi'
-import { Gender } from 'src/common/enum/user.enum'
+import { Gender } from 'src/user/user.entity'
 
 export default class AuthValidation {
     public static register = Joi.object({
