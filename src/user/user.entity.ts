@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 export enum Gender {
     MALE = 'male',
@@ -33,8 +33,8 @@ export class UserEntity {
     confirmCode: string
 
     @CreateDateColumn()
-    createdAt: Timestamp
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt: Timestamp
+    updatedAt: Date
 }

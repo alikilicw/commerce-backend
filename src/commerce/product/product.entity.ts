@@ -6,7 +6,6 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
-    Timestamp,
     UpdateDateColumn
 } from 'typeorm'
 import { CategoryEntity } from '../category/category.entity'
@@ -45,8 +44,8 @@ export class ProductEntity {
     price: number
 
     @CreateDateColumn()
-    createdAt: Timestamp
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt: Timestamp
+    updatedAt: Date
 }
