@@ -5,6 +5,7 @@ import { JoiValidationPipe } from 'src/common/pipe/validation.pipe'
 import AuthValidation from './auth.validation'
 import { ResponseDto } from 'src/common/dto/response.dto'
 import { AuthGuard } from '@nestjs/passport'
+import { UserEntity } from 'src/user/user.entity'
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +13,7 @@ export class AuthController {
 
     @Post('register')
     @UsePipes(new JoiValidationPipe({ bodySchema: AuthValidation.register }))
-    async register(@Body() body: RegisterReqDto): Promise<RegisterResDto> {
+    async register(@Body() body: RegisterReqDto): Promise<ResponseDto<RegisterResDto>> {
         await this.authService.register(body)
         return {
             message:
@@ -21,7 +22,7 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() body: LoginReqDto): Promise<LoginResDto> {
+    async login(@Body() body: LoginReqDto): Promise<ResponseDto<LoginResDto>> {
         const response = await this.authService.login(body)
 
         return {
@@ -31,16 +32,17 @@ export class AuthController {
     }
 
     @Get('confirm')
-    async confirm(@Query() query: { userId: number; code: string }): Promise<boolean> {
-        return this.authService.confirm(query.userId, query.code)
+    async confirm(@Query() query: { userId: number; code: string }): Promise<ResponseDto<boolean>> {
+        return {
+            data: await this.authService.confirm(query.userId, query.code)
+        }
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Get('whoami')
-    async whoami(@Request() req): Promise<ResponseDto> {
+    async whoami(@Request() req): Promise<ResponseDto<UserEntity>> {
         return {
-            data: req.user,
-            message: 'OK'
+            data: req.user
         }
     }
 }

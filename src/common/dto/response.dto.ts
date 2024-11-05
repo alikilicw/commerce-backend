@@ -1,4 +1,4 @@
-export type ResponseDto = {
-    data?: any
-    message: string
+export type ResponseDto<T> = {
+    data?: T
+    message?: string
 }

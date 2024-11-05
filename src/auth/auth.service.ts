@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { UserEntity } from 'src/user/user.entity'
-import { LoginReqDto, LoginServiceResDto, RegisterReqDto } from './auth.dto'
-import { JwtPayload, sign, verify } from 'jsonwebtoken'
+import { LoginReqDto, LoginResDto, RegisterReqDto } from './auth.dto'
+import { sign } from 'jsonwebtoken'
 import { Constants } from 'src/common/constants.config'
 import { hash, compare } from 'bcrypt'
 import { UserService } from 'src/user/user.service'
@@ -29,7 +29,7 @@ export class AuthService {
         return true
     }
 
-    async login(loginReqDto: LoginReqDto): Promise<LoginServiceResDto> {
+    async login(loginReqDto: LoginReqDto): Promise<LoginResDto> {
         const user = await this.userService.findByUsername(loginReqDto.username, 'password')
         if (!user) throw new NotFoundException('User not found.')
         if (!user.isActive) throw new BadRequestException('Verify email first.')

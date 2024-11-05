@@ -6,12 +6,9 @@ export type LoginReqDto = {
     password: string
 }
 
-export type LoginServiceResDto = {
+export type LoginResDto = {
     user: UserEntity
     token: string
-}
-export type LoginResDto = ResponseDto & {
-    data: LoginServiceResDto
 }
 
 export type RegisterReqDto = {
@@ -21,4 +18,4 @@ export type RegisterReqDto = {
     phone: string
     password: string
 }
-export type RegisterResDto = ResponseDto & {}
+export type RegisterResDto = {}
