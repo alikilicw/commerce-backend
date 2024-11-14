@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm'
 import { ProductEntity } from '../product/product.entity'
 
 @Entity('categories')
@@ -12,9 +21,6 @@ export class CategoryEntity {
     @Column()
     depth: number
 
-    @Column({ nullable: true })
-    parentId: number
-
     @CreateDateColumn()
     createdAt: Date
 
@@ -23,4 +29,11 @@ export class CategoryEntity {
 
     @OneToMany(() => ProductEntity, (product) => product.category)
     products: ProductEntity[]
+
+    @ManyToOne(() => CategoryEntity)
+    @JoinColumn({ name: 'parent' })
+    parent: CategoryEntity
+
+    @OneToMany(() => CategoryEntity, (category) => category.parent)
+    children: CategoryEntity[]
 }

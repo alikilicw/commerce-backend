@@ -35,7 +35,7 @@ export class CategoryController {
     @Post()
     @UsePipes(new JoiValidationPipe({ bodySchema: CategoryValidation.create }))
     async create(@Body() createCategoryDto: CreateCategoryDto): Promise<ResponseDto<CategoryEntity>> {
-        const category = this.categoryService.create(createCategoryDto)
+        const category = await this.categoryService.create(createCategoryDto)
         return {
             data: await this.categoryService.save(category)
         }

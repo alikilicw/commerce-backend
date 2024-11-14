@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CategoryEntity } from './category.entity'
 import { Repository } from 'typeorm'
@@ -17,20 +17,37 @@ export class CategoryService {
 
     async find(findCategoryDto: FindCategoryDto): Promise<CategoryEntity[]> {
         return await this.categoryRepository.find({
-            where: findCategoryDto
+            where: findCategoryDto,
+            relations: {
+                parent: true
+            }
         })
     }
 
     async findOne(findCategoryDto: FindCategoryDto): Promise<CategoryEntity> {
-        return this.categoryRepository.findOneBy(findCategoryDto)
+        const category = await this.categoryRepository.findOne({ relations: { parent: true }, where: findCategoryDto })
+        if (!category) throw new NotFoundException('Category not found.')
+        return category
     }
 
     async findById(id: number): Promise<CategoryEntity> {
-        return this.categoryRepository.findOneBy({ id })
+        const category = this.categoryRepository.findOne({ relations: { parent: true }, where: { id } })
+        if (!category) throw new NotFoundException('Category not found.')
+        return category
     }
 
-    create(createCategoryDto: CreateCategoryDto): CategoryEntity {
-        return this.categoryRepository.create(createCategoryDto)
+    async create(createCategoryDto: CreateCategoryDto): Promise<CategoryEntity> {
+        const categoryCheck = await this.categoryRepository.findOne({ where: { name: createCategoryDto.name } })
+        if (categoryCheck) throw new BadRequestException('There is a category with this name.')
+
+        const newCategory = this.categoryRepository.create(createCategoryDto)
+
+        if (createCategoryDto.depth > 0) {
+            const category = await this.findById(createCategoryDto.parentId)
+            newCategory.parent = category
+        }
+
+        return newCategory
     }
 
     async save(category: CategoryEntity): Promise<CategoryEntity> {
